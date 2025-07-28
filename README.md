@@ -46,7 +46,7 @@ This repo contains the code for our paper **Enhancing Chinese Character Restorat
     ```.bash
     mkdir -p datasets/
     # unzip & split into train/test/visualization
-    bash tools/prepare_celebahq.sh
+    bash tools/prepare_chinese_val.sh
     ```
 
 #### Evaluation Data
@@ -54,7 +54,7 @@ This repo contains the code for our paper **Enhancing Chinese Character Restorat
 - Generate 2k `(image, mask)` pairs to be used for evaluation.
 
     ```.bash
-    bash tools/prepare_celebahq_evaluation.sh
+    bash tools/prepare_chinese_evaluation.sh
     ```
 
 #### Evaluation Data
@@ -64,7 +64,7 @@ This repo contains the code for our paper **Enhancing Chinese Character Restorat
 - Generate 30k `(image, mask)` pairs to be used for evaluation.
 
     ```.bash
-    bash tools/prepare_places_evaluation.sh
+    bash tools/prepare_chinese_evaluation.sh
     ```
 
 ##### Segmentation Mask strategy
@@ -85,7 +85,7 @@ This repo contains the code for our paper **Enhancing Chinese Character Restorat
 - Generate `(image, mask)` pairs to be used for segmentation mask based evaluation.
 
     ```.bash
-    bash tools/prepare_places_segm_evaluation.sh
+    bash tools/prepare_chinese_segm_evaluation.sh
     ```
 
 > Note: The pairs are only generated for images with detected instances.
