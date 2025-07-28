@@ -19,24 +19,6 @@ from training.mdta import MDTA  # 导入 MDTA 模块
 
 
 # ----------------------------------------------------------------------------
-'''
-class ReconstructionModule(nn.Module):
-    def __init__(self, img_channels):
-        super(ReconstructionModule, self).__init__()
-        self.conv1 = nn.Conv2d(img_channels, 64, kernel_size=3, padding=1)
-        self.conv2 = nn.Conv2d(64, 128, kernel_size=3, padding=1)
-        self.conv3 = nn.Conv2d(128, img_channels, kernel_size=3, padding=1)
-        self.relu = nn.ReLU()
-        self.pool = nn.MaxPool2d(2, 2)
-
-    def forward(self, x):
-        x = self.relu(self.conv1(x))
-        x = self.pool(x)
-        x = self.relu(self.conv2(x))
-        x = self.pool(x)
-        x = self.conv3(x)
-        return x
-'''
 
 @misc.profiled_function
 # 对张量 x 进行二阶矩归一化，确保其在指定维度上的平方均值为 1。具体来说，它通过调整张量的幅度（大小）来使其具有均匀的分布
