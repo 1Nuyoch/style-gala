@@ -92,8 +92,6 @@ This repo contains the code for our paper **Enhancing Chinese Character Restorat
 
 ## 3. Training and Evaluation
 
-![places](docs/places_qual.svg)
-
 ### Training on 256x256
 
     ```.bash
