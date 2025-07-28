@@ -51,14 +51,6 @@ This repo contains the code for our paper **Enhancing Chinese Character Restorat
 
 #### Evaluation Data
 
-- Generate 2k `(image, mask)` pairs to be used for evaluation.
-
-    ```.bash
-    bash tools/prepare_chinese_evaluation.sh
-    ```
-
-#### Evaluation Data
-
 ##### Irregular Mask Strategy
 
 - Generate 30k `(image, mask)` pairs to be used for evaluation.
