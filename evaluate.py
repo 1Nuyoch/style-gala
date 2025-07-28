@@ -33,14 +33,12 @@ from metrics.evaluation.losses.base_loss import SSIMScore, LPIPSScore, FIDScore,
 from metrics.evaluation.utils import load_yaml
 
 #----------------------------------------------------------------------------
-#将图像张量保存为 PNG 格式的图像文件。将图像从 GPU 移到 CPU。对图像进行反归一化。调整张量维度以适应图像格式。将图像数据转换为 NumPy 数组，并将像素值从 0-255 范围调整为 0-1。使用 plt.imsave 保存图像。
 def save_image(img, name):
     x = denormalize(img.detach().cpu())
     x = x.permute(1, 2, 0).numpy()
     x = np.rint(x) / 255.
     plt.imsave(name+'.png', x)
 
-    #将归一化的图像张量反归一化回原始像素值范围。定义图像的均值和标准差。使用 lambda 函数对张量进行反归一化操作。返回反归一化后的张量。
 def denormalize(tensor):
     pixel_mean = torch.Tensor([127.5, 127.5, 127.5]).view(3, 1, 1)
     pixel_std = torch.Tensor([127.5, 127.5, 127.5]).view(3, 1, 1)
@@ -48,7 +46,7 @@ def denormalize(tensor):
 
     return denormalizer(tensor)
 
-#生成的图像保存到特定文件夹中。将生成的图像从 GPU 移到 CPU，并转换为 NumPy 数组。调整图像像素值从 [-1, 1] 范围到 [0, 255] 范围。使用 plt.imsave 将图像保存为 PNG 格式，并关闭绘图窗口
+
 def visualize_gen(i, msk_type, comp_img):
     lo, hi = [-1, 1]
     
@@ -59,12 +57,10 @@ def visualize_gen(i, msk_type, comp_img):
     plt.close()
 
 
-def create_folders(msk_type):#创建保存生成图像的文件夹。检查文件夹是否存在，如果不存在则创建文件夹
+def create_folders(msk_type):
     if not os.path.exists(f'fid_gens/{msk_type}'):
         os.makedirs(f'fid_gens/{msk_type}')
 
-
-#使用生成器生成图像并保存。复制并设置生成器模型为评估模式。加载图像数据集。创建数据加载器。对每个数据进行循环，生成图像并进行保存。
 def save_gen(G, rank, num_gpus, device, img_data, resolution, label, truncation_psi, msk_type):
     G = copy.deepcopy(G).eval().requires_grad_(False).to(device)
     dataset = ImageDataset(img_data, resolution)
@@ -87,7 +83,6 @@ def save_gen(G, rank, num_gpus, device, img_data, resolution, label, truncation_
             comp_img = invisible_masks.to(device) * pred_img + (1 - invisible_masks).to(device) * images.to(device)
             visualize_gen(fname, msk_type, comp_img.detach())
 
-#初始化分布式计算环境，运行图像生成和评估流程。初始化分布式计算环境。设定 GPU 设备。打印生成器参数信息并创建保存文件夹。调用 save_gen 函数生成并保存图像。使用预定义的评估器计算生成图像的质量指标，并保存结果
 def run_gen(rank, num_gpus, temp_dir, G, img_data, resolution, label, truncation_psi):
     # Init torch.distributed.
     if num_gpus > 1:
@@ -129,7 +124,7 @@ def run_gen(rank, num_gpus, temp_dir, G, img_data, resolution, label, truncation
             'ssim': SSIMScore(),
             'lpips': LPIPSScore(),
             'fid': FIDScore(),
-            'psnr': PSNRCalculator()  # 添加 PSNR 作为新的评估指标
+            'psnr': PSNRCalculator()  
         }
         evaluator = InpaintingEvaluator(eval_dataset, scores=metrics, area_grouping=True,
                                 integral_title='lpips_fid100_f1', integral_func=None,
@@ -145,12 +140,12 @@ def run_gen(rank, num_gpus, temp_dir, G, img_data, resolution, label, truncation
 
 @click.command()
 @click.pass_context
-@click.option('--network', 'network_pkl', help='Network pickle filename', required=True)#指定预训练模型的路径，必需参数。
-@click.option('--trunc', 'truncation_psi', type=float, help='Truncation psi', default=0.1, show_default=True)# Truncation psi 参数，用于控制生成图像的多样性。
-@click.option('--class', 'class_idx', type=int, help='Class label (unconditional if not specified)')#类标签（如果没有指定，则为无条件生成）。
-@click.option('--img_data', help='Training images (directory)', metavar='PATH', required=True)# 训练图像目录，必需参数。
-@click.option('--resolution', help='Res of train [default: 256]', type=int, metavar='INT')#训练图像的分辨率，默认为 256。
-@click.option('--num_gpus', help='Number of gpus [default: 1]', type=int, metavar='INT')#使用的 GPU 数量，默认为 1。
+@click.option('--network', 'network_pkl', help='Network pickle filename', required=True)
+@click.option('--trunc', 'truncation_psi', type=float, help='Truncation psi', default=0.1, show_default=True)
+@click.option('--class', 'class_idx', type=int, help='Class label (unconditional if not specified)')
+@click.option('--img_data', help='Training images (directory)', metavar='PATH', required=True)
+@click.option('--resolution', help='Res of train [default: 256]', type=int, metavar='INT')
+@click.option('--num_gpus', help='Number of gpus [default: 1]', type=int, metavar='INT')
 
 def generate_images(
     ctx: click.Context,
@@ -204,7 +199,6 @@ def generate_images(
                         img_data=img_data, resolution=resolution, label=label, truncation_psi=truncation_psi)
         else:
             torch.multiprocessing.spawn(fn=run_gen, args=(num_gpus, temp_dir, G, img_data, resolution, label, truncation_psi), nprocs=num_gpus)
-#使用 torch.multiprocessing.spawn 启动生成进程。如果只使用一个 GPU，直接调用 run_gen 函数；否则使用 torch.multiprocessing.spawn 启动多个进程。
 
 #----------------------------------------------------------------------------
 
