@@ -1,9 +1,4 @@
 # style-gala
-# FcF-Inpainting
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SHI-Labs/FcF-Inpainting/blob/main/colab/FcF_Inpainting.ipynb) [![Huggingface space](https://img.shields.io/badge/🤗-Huggingface%20Space-cyan.svg)](https://huggingface.co/spaces/shi-labs/FcF-Inpainting) [![Framework: PyTorch](https://img.shields.io/badge/Framework-PyTorch-orange.svg)](https://pytorch.org/) [![License](https://img.shields.io/badge/License-Apache_2.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
-
-<sup>&dagger;</sup> Equal Contribution
 
 This repo contains the code for our paper **Enhancing Chinese Character Restoration: A Style-Integrated and Feature-Aggregated Approach**.
 
@@ -74,8 +69,6 @@ This repo contains the code for our paper **Enhancing Chinese Character Restorat
 
 ##### Segmentation Mask strategy
 
-- Install [Detectron2-v0.5](https://github.com/facebookresearch/detectron2/releases/tag/v0.5).
-
     ```.bash
     python -m pip install detectron2==0.5 -f \
     https://dl.fbaipublicfiles.com/detectron2/wheels/cu110/torch1.7/index.html
@@ -128,6 +121,4 @@ This repo contains the code for our paper **Enhancing Chinese Character Restorat
         --network=[path-to-checkpoint] \
         --num_gpus=8
     ```
-
-![celeba](docs/celeba_qual.svg)
 
